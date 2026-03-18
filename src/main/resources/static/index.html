@@ -10,8 +10,9 @@ body{margin:0;font-family:'Segoe UI';background:#f4f6f9; padding-bottom: 50px;}
 .green{background:#e6f7ec;color:#1a7f37;}
 .red{background:#fdecea;color:#c62828;}
 .device-btn{padding:6px 14px;border-radius:6px;border:none;cursor:pointer;font-size:12px;font-weight:bold;}
-.main {display: flex;justify-content: center;margin: 40px auto; gap: 30px;flex-wrap: wrap;width: 95%;max-width: 1400px;
-.panel {background: white;padding: 25px;flex: 1;min-width: 320px;max-width: 450px;border-radius: 12px;box-shadow: 0 8px 25px rgba(0,0,0,0.05);}
+.main{display:flex;justify-content:center;margin-top:40px;gap:30px;flex-wrap:wrap;padding:0 20px;}
+.panel{background:white;padding:25px;width:360px;border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,0.05);}
+.history-panel{width:750px;margin-top:20px;}
 input,select{width:100%;padding:12px;margin:8px 0 18px;border:1px solid #ddd;border-radius:8px;font-size:14px; box-sizing:border-box;}
 button{width:100%;padding:14px;background:#2a5298;color:white;border:none;border-radius:8px;cursor:pointer; font-weight:bold;}
 .btn-danger{background:#c62828;}
@@ -21,22 +22,18 @@ button{width:100%;padding:14px;background:#2a5298;color:white;border:none;border
 .settings.open{right:0;}
 .overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.3);display:none;z-index:999;}
 .overlay.show{display:block;}
-.history-panel { width: 750px; margin-top: 20px; }
-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px;}
-th, td { text-align: left; padding: 12px; border-bottom: 1px solid #eee; }
-th { background: #fafbfc; color: #555; }
-
-.dropdown { position: relative; display: inline-block; }
-.dropdown-btn { padding: 6px 14px; background: white; color: #333; border: 1px solid #ccc; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; width: auto; }
-.dropdown-content { display: none; position: absolute; top: 100%; right: 0; background-color: white; min-width: 180px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1); z-index: 1; border-radius: 6px; overflow: hidden; border: 1px solid #eee; }
-.dropdown-content a { color: black; padding: 10px 12px; text-decoration: none; display: block; font-size: 12px; border-bottom: 1px solid #f4f6f9; }
-.dropdown-content a:hover { background-color: #f4f6f9; }
-.dropdown:hover .dropdown-content { display: block; }
-.dropdown:hover .dropdown-btn { background: #f4f6f9; }
-
-/* CLEAN, LOG-STYLE NOTIFICATIONS */
-.trigger { background: #f8f9fa; padding: 8px; border-radius: 4px; margin-top: 6px; font-size: 13px; border: 1px solid #e2e8f0; color: #333; }
-.trigger-success { background: #f8f9fa; padding: 8px; border-radius: 4px; margin-top: 6px; font-size: 13px; border: 1px solid #e2e8f0; color: #1a7f37; }
+table{width:100%;border-collapse:collapse;margin-top:15px;font-size:14px;}
+th,td{text-align:left;padding:12px;border-bottom:1px solid #eee;}
+th{background:#fafbfc;color:#555;}
+.dropdown{position:relative;display:inline-block;}
+.dropdown-btn{padding:6px 14px;background:white;color:#333;border:1px solid #ccc;border-radius:6px;cursor:pointer;font-size:12px;font-weight:bold;width:auto;}
+.dropdown-content{display:none;position:absolute;top:100%;right:0;background-color:white;min-width:180px;box-shadow:0px 8px 16px 0px rgba(0,0,0,0.1);z-index:1;border-radius:6px;overflow:hidden;border:1px solid #eee;}
+.dropdown-content a{color:black;padding:10px 12px;text-decoration:none;display:block;font-size:12px;border-bottom:1px solid #f4f6f9;}
+.dropdown-content a:hover{background-color:#f4f6f9;}
+.dropdown:hover .dropdown-content{display:block;}
+.dropdown:hover .dropdown-btn{background:#f4f6f9;}
+.trigger{background:#f8f9fa;padding:8px;border-radius:4px;margin-top:6px;font-size:13px;border:1px solid #e2e8f0;color:#333;}
+.trigger-success{background:#f8f9fa;padding:8px;border-radius:4px;margin-top:6px;font-size:13px;border:1px solid #e2e8f0;color:#1a7f37;}
 </style>
 
 <script>
@@ -91,7 +88,6 @@ function resetSystem() {
         avgTxn = null;
         maxTxn = null;
         sessionTxns = 0; 
-        
         document.getElementById('txnDisplay').innerText = "0";
         document.getElementById('maxDisplay').innerText = "--";
         document.getElementById('fill').style.width = "0%";
@@ -110,7 +106,6 @@ function runScenario(type) {
     let merchInput = document.getElementById('merchant');
     let locInput = document.getElementById('location');
     let timeInput = document.getElementById('simulatedTime');
-
     if (type === 'normal') {
         amtInput.value = 1200;
         merchInput.value = 'grocery';
@@ -137,10 +132,8 @@ function runScenario(type) {
 function runCheck(){
     let amt = parseInt(document.getElementById('amount').value);
     if(!amt){ alert("Enter a valid amount"); return; }
-
     lastTxnTime = Date.now();
     let timeOverride = document.getElementById('simulatedTime').value;
-
     fetch("/check",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
@@ -160,14 +153,11 @@ function runCheck(){
         let fill = document.getElementById('fill');
         fill.style.width = Math.min(res.score, 100) + "%";
         fill.style.background = res.score >= 70 ? "red" : res.score >= 40 ? "orange" : "green";
-
         let dec = document.getElementById('decision');
         dec.innerText = res.decision;
         dec.className = "badge " + (res.score >= 70 ? "red" : "green");
-
         let reasonsDiv = document.getElementById('reasons');
         reasonsDiv.innerHTML = "";
-        
         if (res.reasons.length === 0) {
             let d = document.createElement("div");
             d.className = "trigger-success"; 
@@ -184,16 +174,12 @@ function runCheck(){
                 }
             });
         }
-
         if(res.decision === "APPROVED"){
             if(avgTxn === null) avgTxn = amt;
             else avgTxn = Math.floor((avgTxn + amt) / 2);
-            
             if(maxTxn === null || amt > maxTxn) maxTxn = amt;
-
             document.getElementById('maxDisplay').innerText = maxTxn;
         }
-
         sessionTxns++;
         document.getElementById('txnDisplay').innerText = sessionTxns;
         loadHistory();
@@ -211,23 +197,19 @@ function loadProfile(p){
 window.onload = loadHistory;
 </script>
 </head>
-
 <body>
 <div class="header">
     <div style="font-weight:bold; font-size:18px;">💳 Fraud Risk Engine</div>
     <div onclick="toggleSettings()" style="cursor:pointer; font-size:20px;">⚙️</div>
 </div>
-
 <div class="monitor">
     <div>Time Since Last Txn: <span id="timer" style="font-weight:bold;">--</span></div>
     <div>Session Txns: <span id="txnDisplay" style="font-weight:bold;">0</span></div>
     <div>Max Spend: ₹<span id="maxDisplay" style="font-weight:bold;">--</span></div>
-    
     <div style="display:flex; align-items:center; gap:15px; margin-left:auto;">
         <div style="display:flex; align-items:center; gap:8px;">
             Device: <button id="deviceBtn" class="device-btn green" onclick="toggleDevice()">KNOWN</button>
         </div>
-        
         <div class="dropdown">
             <button class="dropdown-btn">Try Demo Scenarios ▾</button>
             <div class="dropdown-content">
@@ -238,11 +220,9 @@ window.onload = loadHistory;
         </div>
     </div>
 </div>
-
 <div class="main">
     <div class="panel">
         <input id="amount" type="number" placeholder="Transaction Amount">
-        
         <label style="font-size:12px; color:#666;">Merchant Type</label>
         <select id="merchant">
             <option value="grocery">Groceries & Retail (Low Risk)</option>
@@ -253,17 +233,14 @@ window.onload = loadHistory;
             <option value="gaming">Online Gaming / Betting (High Risk)</option>
             <option value="crypto">Crypto Exchange (High Risk)</option>
         </select>
-
         <label style="font-size:12px; color:#666;">Location</label>
         <select id="location">
             <option value="home">Home Area</option>
             <option value="domestic">Domestic Out-of-state</option>
             <option value="international">International</option>
         </select>
-
         <button onclick="runCheck()">Run Fraud Check</button>
     </div>
-
     <div class="panel">
         <h3 style="margin-top:0;">Risk Meter</h3>
         <div class="bar"><div id="fill" class="fill"></div></div>
@@ -276,7 +253,6 @@ window.onload = loadHistory;
         <h3 style="margin-top:25px; font-size:15px;">Triggered Rules</h3>
         <div id="reasons"></div>
     </div>
-
     <div class="panel history-panel">
         <h3 style="margin-top:0;">Transaction History</h3>
         <table>
@@ -289,16 +265,13 @@ window.onload = loadHistory;
                     <th>Status</th>
                 </tr>
             </thead>
-            <tbody id="historyBody">
-                </tbody>
+            <tbody id="historyBody"></tbody>
         </table>
     </div>
 </div>
-
 <div id="settings" class="settings">
     <div onclick="toggleSettings()" style="cursor:pointer; float:right; font-size:20px;">✖</div>
     <h3 style="margin-top:0;">Settings</h3>
-    
     <label style="font-size:12px; color:#666;">Simulate Profile</label>
     <select onchange="loadProfile(this.value)">
         <option value="">Manual</option>
@@ -307,19 +280,15 @@ window.onload = loadHistory;
         <option value="C">High (Avg: 12k)</option>
         <option value="D">Heavy (Avg: 30k)</option>
     </select>
-
     <label style="font-size:12px; color:#666;">Simulated Time of Day</label>
     <select id="simulatedTime">
         <option value="">Use Real System Time</option>
         <option value="14">2:00 PM (Normal Hour)</option>
         <option value="3">3:00 AM (Odd Hour)</option>
     </select>
-
     <hr style="border:0; border-top:1px solid #eee; margin:25px 0;">
-
     <button class="btn-danger" onclick="resetSystem()">Reset Entire System</button>
 </div>
-
 <div id="overlay" class="overlay" onclick="toggleSettings()"></div>
 </body>
 </html>
