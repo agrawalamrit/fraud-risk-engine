@@ -94,8 +94,15 @@ public class FraudService {
 
         if (score > 100) score = 100;
 
-        String decision = (score >= 70) ? "DECLINED" : "APPROVED";
-
+        boolean hardDecline = false;
+        
+        if (isRapid && txnCount >= 3) {
+            hardDecline = true;
+            reasons.add("Repeated rapid transactions indicate possible card testing");
+        }
+        
+        String decision=(hardDecline || score >= 70) ? "DECLINED" : "APPROVED";
+        
         return new Result(score, decision, reasons);
     }
 }
