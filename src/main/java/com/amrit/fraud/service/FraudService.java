@@ -100,6 +100,9 @@ public class FraudService {
             hardDecline = true;
             reasons.add("Repeated rapid transactions indicate possible card testing");
         }
+        if (hardDecline) {
+            score=Math.max(score,70);
+        }
         
         String decision=(hardDecline || score >= 70) ? "DECLINED" : "APPROVED";
         
