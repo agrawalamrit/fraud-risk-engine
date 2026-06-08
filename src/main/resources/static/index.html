@@ -204,6 +204,37 @@ function loadProfile(p){
 }
 
 window.onload = loadHistory;
+    // ==========================================
+// TELEMETRY ENGINE ADDITION
+// ==========================================
+const telemetrySessionId = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2);
+const sessionStartTime = Date.now();
+
+function sendTelemetry(isExit = false) {
+    const payload = JSON.stringify({
+        sessionId: telemetrySessionId,
+        screenResolution: `${window.screen.width}x${window.screen.height}`,
+        pageTitle: document.title,
+        duration: Math.round((Date.now() - sessionStartTime) / 1000)
+    });
+
+    if (isExit && navigator.sendBeacon) {
+        navigator.sendBeacon('/api/telemetry', payload);
+    } else {
+        fetch('/api/telemetry', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: payload
+        }).catch(err => console.debug("Telemetry chunk queued"));
+    }
+}
+
+// Heartbeat execution: updates database tracking records every 10 seconds
+setInterval(sendTelemetry, 10000);
+
+// Flush stay durations straight to DB if window or tab closing event fires
+window.addEventListener('pagehide', () => sendTelemetry(true));
+
 </script>
 </head>
 <body>
