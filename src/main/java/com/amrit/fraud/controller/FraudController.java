@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import jakarta.servlet.http.HttpServletRequest;
@@ -143,7 +144,7 @@ public class FraudController {
         List<TxnRecord> history = (List<TxnRecord>) session.getAttribute("history");
         if (history == null) history = new ArrayList<>();
         
-        String timestamp = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+        String timestamp = LocalTime.now(ZoneId.of("Asia/Kolkata")).format(DateTimeFormatter.ofPattern("HH:mm:ss"));
         history.add(0, new TxnRecord(timestamp, request.getAmount(), request.getMerchant(), result.getScore(), result.getDecision()));
         session.setAttribute("history", history);
 
